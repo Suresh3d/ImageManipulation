@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <title></title>
+    <head></head>
+    <body>
+        <canvas id = 'canvas' style = 'border: 1px solid red; width:800 px; height: 600px;'>
+            Shut up!. Browser is not supporting canvas.
+        </canvas>
+
+        <script>
+              var canvas = document.getElementById('canvas');
+
+              canvas.width = canvas.scrollWidth;
+              canvas.height = canvas.scrollHeight;
+
+              var ctx = canvas.getContext('2d');
+
+              var image = new Image();
+
+              image.onload = function (){
+                    ctx.drawImage(image,0,0,canvas.width, canvas.height);
+                    
+                    var dCanvas = document.createElement('canvas');
+
+                    dCanvas.width  = canvas.width;
+                    dCanvas.height = canvas.height;
+                    
+                    var dCtx = dCanvas.getContext('2d');
+                    dCanvas.style.border   = "1px solid blue";
+                    document.body.appendChild(dCanvas);
+
+                    dCtx.drawImage(canvas,0,0,canvas.width, canvas.height,0,0,canvas.width, canvas.height);
+
+                    
+                    var pixelData = dCtx.getImageData(0,0,dCanvas.width,dCanvas.height);
+
+                    console.log(pixelData);
+                    var borderLine = [];
+                    var data = pixelData.data;
+                    for(var i=0; i<pixelData.data.length; i+=4)
+                    {
+                        var data = pixelData.data;
+                        if(data[i]<100 && data[i+1] < 100 && data[i+1] < 100)
+                            borderLine.push(i);
+                    /*var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    data[i]     = avg; // red
+                    data[i + 1] = avg; // green
+                    data[i + 2] = avg;*/
+                    }
+                    var coordinates = [];
+                    for(var i of borderLine)
+                    {
+                        var val = Math.floor(i/(canvas.width * 4));
+                        var mod = i % (canvas.width * 4);
+
+                        if(mod === 0 )
+                            coordinates.push({x:val,y:val})
+                        else
+                        {
+                            yVal = val + 1;
+                            xVal = mod / 4; 
+                            
+                            coordinates.push({x:xVal, y:yVal});
+                        }
+                    }
+
+                    console.log(coordinates);
+                    
+                   /* ctx.strokeStyle = "#FF0000";
+                    
+                    for(var i=0; i< coordinates.length; i++)
+                    {
+                        var coord = coordinates[i];
+                        ctx.beginPath();
+                        ctx.arc(coord.x, coord.y, 4, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }*/
+                    //  ctx.putImageData(pixelData, 0, 0);
+
+                 //   console.log(borderLine);
+              }
+              
+              image.src = './circle.jpg';
+        </script>
+    </body>
+</html>
